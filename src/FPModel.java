@@ -16,6 +16,7 @@ public class FPModel extends Observable {
      * for free cells when adding discs more intuitive. E.g., a 3x3 board is
      * indexed as such:
      *
+     *
      * [2,0]    [2,1]   [2,2]
      * [1,0]    [1,1]   [1,2]
      * [0,0]    [0,1]   [0,2]
