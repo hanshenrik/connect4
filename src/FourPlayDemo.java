@@ -10,11 +10,6 @@ public class FourPlayDemo {
         model.addDisc(0);
         model.addDisc(0);
         model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
         model.printBoard();
         System.out.println("vertical: "+ model.checkVictory(3, 0));
 
@@ -39,6 +34,8 @@ public class FourPlayDemo {
         model.addDisc(4);
         model.printBoard();
         System.out.println("horizontal: "+model.checkVictory(0,1));
+        System.out.println(model.getScore());
+        model.resetScore();
         System.out.println(model.getScore());
     }
 }

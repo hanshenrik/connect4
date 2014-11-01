@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.Observable;
 
 /**
@@ -5,7 +6,6 @@ import java.util.Observable;
  */
 public class FPModel extends Observable {
 
-    // TODO: let user specify board size
     private final int ROWS = 7;
     private final int COLS = 6;
     private Disc starter, nextDisc;
@@ -16,11 +16,9 @@ public class FPModel extends Observable {
      * for free cells when adding discs more intuitive. E.g., a 3x3 board is
      * indexed as such:
      *
-     *
      * [2,0]    [2,1]   [2,2]
      * [1,0]    [1,1]   [1,2]
      * [0,0]    [0,1]   [0,2]
-     *
      */
 
     public FPModel() {
@@ -41,10 +39,15 @@ public class FPModel extends Observable {
     }
 
     private void increaseWins(Disc winningDisc) {
-        if (winningDisc == Disc.PLAYER1)
+        if (winningDisc == Disc.PLAYER1) {
             playerOneWins++;
-        else if (winningDisc == Disc.PLAYER2)
+        }
+        else if (winningDisc == Disc.PLAYER2) {
             playerTwoWins++;
+        }
+        else {
+            System.out.println("Error: Unidentified winning disc.");
+        }
     }
 
     public void newGame() {
@@ -77,16 +80,18 @@ public class FPModel extends Observable {
     // TODO: make custom exception ColumnFullException. Or just return -1?
     public void addDisc(int col) throws ArrayIndexOutOfBoundsException {
         int row = getLowestFreeRow(col);
-        if (row == -1)
+        if (row == -1) {
             throw new ArrayIndexOutOfBoundsException("Column is full! Disc not added.");
+        }
         board[row][col].setDisc(nextDisc);
         switchTurn();
     }
 
     private int getLowestFreeRow(int col) {
         for (int i = 0; i < ROWS - 1; i++) {
-            if (!board[i][col].hasDisc())
+            if (!board[i][col].hasDisc()) {
                 return i;
+            }
         }
         return -1;
     }
@@ -106,10 +111,12 @@ public class FPModel extends Observable {
         for (int j = 0; j < COLS; j++) {
             cell = board[row][j];
             curDisc = cell.getDisc();
-            if (curDisc == prevDisc && cell.hasDisc())
+            if (curDisc == prevDisc && cell.hasDisc()) {
                 similarInARow++;
-            else
+            }
+            else {
                 similarInARow = 1;
+            }
 
             if (similarInARow == 4) {
                 System.out.println("hor");
@@ -130,10 +137,12 @@ public class FPModel extends Observable {
         for (int i = 0; i < ROWS; i++) {
             cell = board[i][col];
             curDisc = cell.getDisc();
-            if (curDisc == prevDisc && cell.hasDisc())
+            if (curDisc == prevDisc && cell.hasDisc()) {
                 similarInARow++;
-            else
+            }
+            else {
                 similarInARow = 1;
+            }
 
             if (similarInARow == 4) {
                 System.out.println("ver");
@@ -165,13 +174,17 @@ public class FPModel extends Observable {
 
         // search in North East direction
         for (int i = 0; lowestRow + i < ROWS - 1; i++) {
-            if (leftmostCol + i > COLS - 1) break;
+            if (leftmostCol + i > COLS - 1) {
+                break;
+            }
             cell = board[lowestRow + i][leftmostCol + i];
             curDisc = cell.getDisc();
-            if (curDisc == prevDisc && cell.hasDisc())
+            if (curDisc == prevDisc && cell.hasDisc()) {
                 similarInARow++;
-            else
+            }
+            else {
                 similarInARow = 1;
+            }
 
             if (similarInARow == 4) {
                 System.out.println("ne");
@@ -199,14 +212,17 @@ public class FPModel extends Observable {
 
         // search in North West direction
         for (int i = 0; lowestRow + i < ROWS - 1; i++) {
-            if (rightmostCol - i < 0)
+            if (rightmostCol - i < 0) {
                 break;
+            }
             cell = board[lowestRow + i][rightmostCol - i];
             curDisc = cell.getDisc();
-            if (curDisc == prevDisc && cell.hasDisc())
+            if (curDisc == prevDisc && cell.hasDisc()) {
                 similarInARow++;
-            else
+            }
+            else {
                 similarInARow = 1;
+            }
 
             if (similarInARow == 4) {
                 System.out.println("nw");
