@@ -8,6 +8,7 @@ public class FPModel extends Observable {
 
     private final int ROWS = 7;
     private final int COLS = 6;
+    private boolean isWinningLine = false;
     private Disc starter, nextDisc;
     private int playerOneWins, playerTwoWins;
     private Cell[][] board;
@@ -38,6 +39,49 @@ public class FPModel extends Observable {
         return playerOneWins + "-" + playerTwoWins;
     }
 
+    // TODO: make private?
+    public void newGame() {
+        switchStarter();
+        nextDisc = starter;
+        createBoard();
+    }
+
+    public void endGame() {
+        // TODO
+        setChanged();
+        notifyObservers();
+    }
+
+    // TODO: make custom exception ColumnFullException. Or just return -1?
+    public void addDisc(int col) throws ArrayIndexOutOfBoundsException {
+        int row = getLowestFreeRow(col);
+        if (row == -1) {
+            throw new ArrayIndexOutOfBoundsException("Column is full! Disc not added.");
+        }
+        board[row][col].setDisc(nextDisc);
+        switchTurn();
+        setChanged();
+        notifyObservers();
+    }
+
+    private int getLowestFreeRow(int col) {
+        for (int i = 0; i < ROWS - 1; i++) {
+            if (!board[i][col].hasDisc()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void createBoard() {
+        board = new Cell[ROWS][COLS];
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                board[i][j] = new Cell();
+            }
+        }
+    }
+
     private void increaseWins(Disc winningDisc) {
         if (winningDisc == Disc.PLAYER1) {
             playerOneWins++;
@@ -50,25 +94,6 @@ public class FPModel extends Observable {
         }
     }
 
-    public void newGame() {
-        switchStarter();
-        nextDisc = starter;
-        createBoard();
-    }
-
-    public void endGame() {
-        // TODO
-    }
-
-    private void createBoard() {
-        board = new Cell[ROWS][COLS];
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                board[i][j] = new Cell();
-            }
-        }
-    }
-
     private void switchTurn() {
         nextDisc = (nextDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
     }
@@ -77,41 +102,66 @@ public class FPModel extends Observable {
         starter = (starter == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
     }
 
-    // TODO: make custom exception ColumnFullException. Or just return -1?
-    public void addDisc(int col) throws ArrayIndexOutOfBoundsException {
-        int row = getLowestFreeRow(col);
-        if (row == -1) {
-            throw new ArrayIndexOutOfBoundsException("Column is full! Disc not added.");
-        }
-        board[row][col].setDisc(nextDisc);
-        switchTurn();
+    public boolean checkVictory(int row, int col) {
+        return checkLine(row, 0, row, COLS - 1) ||  // horizontal
+               checkLine(0, col, ROWS - 1, col);  // vertical
+               // TODO call checkLine for north east diagonal
+               // TODO call checkLine for north west diagonal
     }
 
-    private int getLowestFreeRow(int col) {
-        for (int i = 0; i < ROWS - 1; i++) {
-            if (!board[i][col].hasDisc()) {
-                return i;
+    private boolean checkLine(int startX, int startY, int endX, int endY) {
+        int similarInARow = 0;
+        Disc prevDisc = null;
+        Disc curDisc;
+        int dirX = 0;
+        int dirY = 0;
+
+        if (startX < endX)
+            dirX = 1;
+        if (startY < endY)
+            dirY = 1;
+        else if (startY > endY)
+            dirY = -1;
+
+        int x = startX, y = startY;
+        while (x < ROWS && ((y < COLS && dirY >= 0) || (y >= 0 && dirY == -1))) {
+            curDisc = board[x][y].getDisc();
+            if (curDisc == prevDisc && curDisc != null) {
+                similarInARow++;
+            }
+            else {
+                similarInARow = 1;
+            }
+
+            if (similarInARow == 4) {
+                increaseWins(curDisc);
+                return true;
+            }
+            prevDisc = curDisc;
+            x += dirX;
+            y += dirY;
+        }
+        return false;
+    }
+
+    private boolean isNoCellsLeft () {
+        for (int i = 0; i < COLS; i++) {
+            for (int j = 0; j < ROWS; j++) {
+                if (!board[i][j].hasDisc())
+                    return false;
             }
         }
-        return -1;
-    }
-
-    public boolean checkVictory(int row, int col) {
-        return checkHorizontalVictory(row) ||
-               checkVerticalVictory(col) ||
-               checkDiagonalVictory(row, col);
+        return true;
     }
 
     private boolean checkHorizontalVictory(int row) {
         int similarInARow = 0;
         Disc prevDisc = null;
         Disc curDisc;
-        Cell cell;
 
         for (int j = 0; j < COLS; j++) {
-            cell = board[row][j];
-            curDisc = cell.getDisc();
-            if (curDisc == prevDisc && cell.hasDisc()) {
+            curDisc = board[row][j].getDisc();
+            if (curDisc == prevDisc && curDisc != null) {
                 similarInARow++;
             }
             else {
