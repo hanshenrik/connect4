@@ -5,7 +5,7 @@ public class Cell {
     private Disc disc;
 
     public Cell() {
-        this.disc = null;
+        setDisc(null);
     }
 
     public Disc getDisc() {
