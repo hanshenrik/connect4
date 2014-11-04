@@ -1,12 +1,16 @@
 package test;
 
 import org.junit.*;
+import main.*;
 
 /**
  * There are as many naming conventions out there as there are bricks in the
- * Great Wall of China. I'm using the following convention:
- * methodUnderTest_
+ * Great Wall of China. Inspired by Kyle Blanely's 'JUnit Best Practices' [1],
+ * I'm using the following method names: methodUnderTest_conditionBeingTested
+ *
+ * [1] http://www.kyleblaney.com/junit-best-practices/
  */
+
 public class FPModelTest {
     private FPModel model;
 
@@ -88,9 +92,5 @@ public class FPModelTest {
         Assert.assertFalse("isFullBoard() returned true when board was not full.", model.isFullBoard());
         model.addDisc(5);
         Assert.assertTrue("isFullBoard() returned false when board was exactly full.", model.isFullBoard());
-        model.addDisc(5);
-        model.addDisc(5);
-        model.addDisc(5);
-        Assert.assertTrue("isFullBoard() returned false when board was overfilled.", model.isFullBoard());
     }
 }
