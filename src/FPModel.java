@@ -8,14 +8,13 @@ public class FPModel extends Observable {
     private final int ROWS = 7;
     private final int COLS = 6;
     private boolean isWinningLine;
-    private Disc startingDisc, nextDisc, winner;
+    private Disc startingDisc, nextDisc, lastWinner;
     private int playerOneWins, playerTwoWins;
     private String message;
     private Cell[][] board;
     /*
-     * The board is 'up side down' with respect to rows. This to make searching
-     * for free cells when adding discs more intuitive. E.g., a 3x3 board is
-     * indexed as such:
+     * The board is 'up side down' with respect to rows. This to make the layout
+     * more intuitive. E.g., a 3x3 board would be indexed as such:
      *
      * [2,0]    [2,1]   [2,2]
      * [1,0]    [1,1]   [1,2]
@@ -34,9 +33,8 @@ public class FPModel extends Observable {
         notifyObservers();
     }
 
-    // TODO: better way of returning result. Tuple?
     public String getScore() {
-        return playerOneWins + " - " + playerTwoWins;
+        return playerOneWins + "-" + playerTwoWins;
     }
 
     public void newGame() {
@@ -54,19 +52,26 @@ public class FPModel extends Observable {
     }
 
     public void addDisc(int col) {
-        int row = getLowestFreeRow(col);
+        int row = findLowestFreeRow(col);
+
+        // TODO should checks like this be done here? And should it only set a message?
         if (row == -1)
-            setMessage("Column " + col + " is full. Please put your disc in another column.");
+            setMessage("Column " + col + " is full.");
+        else if (isWinningLine)
+            setMessage("Winning line exists.");
+        else if (isFullBoard())
+            setMessage("Board is full.");
         else {
             board[row][col].setDisc(nextDisc);
             switchTurn();
             checkVictory(row, col);
+            setMessage("");
         }
         setChanged();
         notifyObservers();
     }
 
-    private int getLowestFreeRow(int col) {
+    private int findLowestFreeRow(int col) {
         for (int i = 0; i < ROWS; i++) {
             if (!board[i][col].hasDisc())
                 return i;
@@ -80,6 +85,10 @@ public class FPModel extends Observable {
             for (int j = 0; j < COLS; j++)
                 board[i][j] = new Cell();
         }
+    }
+
+    public Cell[][] getBoard() {
+        return board;
     }
 
     private void increaseWins(Disc winningDisc) {
@@ -100,17 +109,17 @@ public class FPModel extends Observable {
     }
 
     private void checkVictory(int row, int col) {
-        Point northEastStartPoint = getNorthEastStartPoint(row, col);
-        Point northWestStartPoint = getNorthWestStartPoint(row, col);
+        Point northEastSearchStartPoint = getNorthEastSearchStartPoint(row, col);
+        Point northWestSearchStartPoint = getNorthWestSearchStartPoint(row, col);
 
         isWinningLine =
             checkLine(row, 0, row, COLS - 1) || // horizontal
             checkLine(0, col, ROWS - 1, col) || // vertical
-            checkLine(northEastStartPoint.getX(), northEastStartPoint.getY(), ROWS - 1, COLS - 1) ||
-            checkLine(northWestStartPoint.getX(), northWestStartPoint.getY(), ROWS - 1, 0);
+            checkLine(northEastSearchStartPoint.getX(), northEastSearchStartPoint.getY(), ROWS - 1, COLS - 1) ||
+            checkLine(northWestSearchStartPoint.getX(), northWestSearchStartPoint.getY(), ROWS - 1, 0);
     }
 
-    private Point getNorthEastStartPoint(int row, int col) {
+    private Point getNorthEastSearchStartPoint(int row, int col) {
         Point startPoint = new Point(row, col);
         while ( (startPoint.getX() != 0) && (startPoint.getY() != 0) ) {
             startPoint.decreaseX();
@@ -119,7 +128,7 @@ public class FPModel extends Observable {
         return startPoint;
     }
 
-    private Point getNorthWestStartPoint(int row, int col) {
+    private Point getNorthWestSearchStartPoint(int row, int col) {
         Point startPoint = new Point(row, col);
         while ( (startPoint.getX() != 0) && (startPoint.getY() != COLS - 1) ) {
             startPoint.decreaseX();
@@ -153,7 +162,7 @@ public class FPModel extends Observable {
 
             if (similarInARow == 4) {
                 increaseWins(curDisc);
-                winner = curDisc;
+                lastWinner = curDisc;
                 return true;
             }
             prevDisc = curDisc;
@@ -175,8 +184,8 @@ public class FPModel extends Observable {
         return isWinningLine;
     }
 
-    public Disc getWinner() {
-        return winner;
+    public Disc getLastWinner() {
+        return lastWinner;
     }
 
     public boolean isFullBoard() {
@@ -195,19 +204,6 @@ public class FPModel extends Observable {
 
     private void setMessage(String message) {
         this.message = message;
-    }
-
-    // TODO: remove! For developement purposes.
-    public void printBoard() {
-        System.out.println("\n=======================================================");
-        for (int i = ROWS - 1; i >= 0; i--) {
-            System.out.print(i + " ");
-            for (int j = 0; j < COLS; j++) {
-                System.out.print(board[i][j].getDisc() + ", ");
-            }
-            System.out.println("");
-        }
-        System.out.println("=======================================================");
     }
 }
 
