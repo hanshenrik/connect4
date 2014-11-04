@@ -1,3 +1,5 @@
+package main;
+
 /**
  * Created by hanshenrik on 03/11/14.
  */
