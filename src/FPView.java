@@ -8,19 +8,23 @@ import java.util.Observer;
  * Created by hanshenrik on 04/11/14.
  */
 public class FPView implements Observer, ActionListener {
-    private static final Dimension PANEL_SIZE = new Dimension(300,300);
+    private static final Dimension PANEL_SIZE = new Dimension(300, 300);
 
     private FPModel model;
     private FPController controller;
     private JFrame frame;
     private JPanel panel;
 
-    private JTextField redField = new JTextField(3);
-    private JTextField amberField = new JTextField(3);
-    private JTextField greenField = new JTextField(3);
-    private JLabel redLabel = new JLabel("Red");
-    private JLabel amberLabel = new JLabel("Amber");
-    private JLabel greenLabel = new JLabel("Green");
+    private JTextField scoreField = new JTextField();
+    private JTextField messageField = new JTextField();
+    private JTextField nextDiscField = new JTextField();
+    private JTextField startingDiscField = new JTextField();
+    private JTextField winnerField = new JTextField();
+    private JLabel scoreLabel = new JLabel("Score");
+    private JLabel messageLabel = new JLabel("Message");
+    private JLabel nextDiscLabel = new JLabel("Next player");
+    private JLabel startingDiscLabel = new JLabel("Who started?");
+    private JLabel winnerLabel = new JLabel("Winner");
 
     private JButton newGame = new JButton("New game");
     private JButton resetScore = new JButton("Reset score");
@@ -37,7 +41,7 @@ public class FPView implements Observer, ActionListener {
 
     public void createControls()
     {
-        frame = new JFrame("Connect 4");
+        frame = new JFrame("Connect 4 - The info");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container contentPane = frame.getContentPane();
@@ -51,33 +55,41 @@ public class FPView implements Observer, ActionListener {
     }
 
     public void update(java.util.Observable o, Object arg) {
-        redField.setText(model.getScore());
-        amberField.setText(model.isFullBoard() + "");
-        greenField.setText(model.getWinner() + "");
+        scoreField.setText(model.getScore());
+        messageField.setText(model.getMessage());
+        nextDiscField.setText(model.getNextDisc() + "");
+        startingDiscField.setText(model.getStartingDisc() + "");
+        winnerField.setText(model.getWinner() + "");
         frame.repaint();
     }
 
     private void createPanel() {
         panel = new JPanel();
-        panel.setLayout(new GridLayout(5,2));
+        panel.setLayout(new GridLayout(8,2));
 
-        redField.setEditable(false);
-        amberField.setEditable(false);
-        greenField.setEditable(false);
+        scoreField.setEditable(false);
+        messageField.setEditable(false);
+        nextDiscField.setEditable(false);
+        startingDiscField.setEditable(false);
+        winnerField.setEditable(false);
 
-        panel.add(redLabel);
-        panel.add(redField);
-        panel.add(amberLabel);
-        panel.add(amberField);
-        panel.add(greenLabel);
-        panel.add(greenField);
+        panel.add(scoreLabel);
+        panel.add(scoreField);
+        panel.add(messageLabel);
+        panel.add(messageField);
+        panel.add(nextDiscLabel);
+        panel.add(nextDiscField);
+        panel.add(startingDiscLabel);
+        panel.add(startingDiscField);
+        panel.add(winnerLabel);
+        panel.add(winnerField);
 
         newGame.addActionListener(this);
-        panel.add(newGame);
-        resetScore.addActionListener(this);
-        panel.add(resetScore);
         endGame.addActionListener(this);
+        resetScore.addActionListener(this);
+        panel.add(newGame);
         panel.add(endGame);
+        panel.add(resetScore);
 
         panel.setPreferredSize(PANEL_SIZE);
     }
@@ -86,19 +98,26 @@ public class FPView implements Observer, ActionListener {
         newGame.setEnabled(b);
     }
 
-    public void setEnableResetScore(boolean b) {
-        resetScore.setEnabled(b);
-    }
-
     public void setEnableEndGame(boolean b) {
         endGame.setEnabled(b);
     }
 
+    public void setEnableResetScore(boolean b) {
+        resetScore.setEnabled(b);
+    }
+
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == newGame)
+        if (event.getSource() == newGame) {
             controller.newGame();
-        else if (event.getSource() == endGame)
-            controller.endGame();
+            setEnableEndGame(true);
+            setEnableResetScore(true);
+        }
+        else if (event.getSource() == endGame) {
+            setEnableNewGame(true);
+            setEnableEndGame(false);
+            setEnableResetScore(false);
+            // TODO make board interaction disabled
+        }
         else if (event.getSource() == resetScore)
             controller.resetScore();
     }

@@ -24,4 +24,9 @@ public class FPController {
     public void resetScore() {
         model.resetScore();
     }
+
+    public void addDisc(int col) {
+        // validate input?
+        model.addDisc(col);
+    }
 }
