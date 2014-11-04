@@ -22,9 +22,9 @@ public class FPView implements Observer, ActionListener {
     private JTextField winnerField = new JTextField();
     private JLabel scoreLabel = new JLabel("Score");
     private JLabel messageLabel = new JLabel("Message");
-    private JLabel nextDiscLabel = new JLabel("Next player");
+    private JLabel nextDiscLabel = new JLabel("Who's next?");
     private JLabel startingDiscLabel = new JLabel("Who started?");
-    private JLabel winnerLabel = new JLabel("Winner");
+    private JLabel winnerLabel = new JLabel("Who won last time?");
 
     private JButton newGame = new JButton("New game");
     private JButton resetScore = new JButton("Reset score");
@@ -59,7 +59,7 @@ public class FPView implements Observer, ActionListener {
         messageField.setText(model.getMessage());
         nextDiscField.setText(model.getNextDisc() + "");
         startingDiscField.setText(model.getStartingDisc() + "");
-        winnerField.setText(model.getWinner() + "");
+        winnerField.setText(model.getLastWinner() + "");
         frame.repaint();
     }
 
