@@ -28,5 +28,20 @@ public class FPController {
     public void addDisc(int col) {
         // validate input?
         model.addDisc(col);
+        printBoard();
+    }
+
+    private void printBoard() {
+        // TODO: remove! for testing only
+        Cell[][] board = model.getBoard();
+        System.out.println("\n=======================================================");
+        for (int i = board.length - 1; i >= 0; i--) {
+            System.out.print(i + " ");
+            for (int j = 0; j < board[i].length; j++) {
+                System.out.print(board[i][j].getDisc() + ", ");
+            }
+            System.out.println("");
+        }
+        System.out.println("=======================================================");
     }
 }
