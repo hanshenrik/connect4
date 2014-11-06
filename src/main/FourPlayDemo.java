@@ -18,60 +18,60 @@ public class FourPlayDemo {
         FPModel model = new FPModel();
         FPController controller = new FPController(model);
         FPView view = new FPView(model, controller);
-
-        // test vertical
-        controller.addDisc(0);
-        controller.addDisc(1);
-        controller.addDisc(0);
-        controller.addDisc(1);
-        controller.addDisc(0);
-        controller.addDisc(1);
-        controller.addDisc(0);
-
-        // test horizontal
-        controller.newGame();
-        controller.addDisc(0);
-        controller.addDisc(0);
-        controller.addDisc(1);
-        controller.addDisc(1);
-        controller.addDisc(2);
-        controller.addDisc(2);
-        controller.addDisc(3);
-
-        // test diagonal north west
-        controller.newGame();
-        controller.addDisc(0);
-        controller.addDisc(0);
-        controller.addDisc(0);
-        controller.addDisc(0);
-        controller.addDisc(5);
-        controller.addDisc(1);
-        controller.addDisc(1);
-        controller.addDisc(1);
-        controller.addDisc(2);
-        controller.addDisc(2);
-        controller.addDisc(5);
-        controller.addDisc(3);
-
-        // test diagonal north east
-        controller.newGame();
-        controller.addDisc(0);
-        controller.addDisc(1);
-        controller.addDisc(2);
-        controller.addDisc(3);
-        controller.addDisc(4);
-        controller.addDisc(5);
-        controller.addDisc(5);
-        controller.addDisc(5);
-        controller.addDisc(5);
-        controller.addDisc(5);
-        controller.addDisc(0);
-        controller.addDisc(4);
-        controller.addDisc(4);
-        controller.addDisc(4);
-        controller.addDisc(3);
-        controller.addDisc(3);
-        controller.addDisc(0);
-        controller.addDisc(2);
+//
+//        // test vertical
+//        controller.addDisc(0);
+//        controller.addDisc(1);
+//        controller.addDisc(0);
+//        controller.addDisc(1);
+//        controller.addDisc(0);
+//        controller.addDisc(1);
+//        controller.addDisc(0);
+//
+//        // test horizontal
+//        controller.newGame();
+//        controller.addDisc(0);
+//        controller.addDisc(0);
+//        controller.addDisc(1);
+//        controller.addDisc(1);
+//        controller.addDisc(2);
+//        controller.addDisc(2);
+//        controller.addDisc(3);
+//
+//        // test diagonal north west
+//        controller.newGame();
+//        controller.addDisc(0);
+//        controller.addDisc(0);
+//        controller.addDisc(0);
+//        controller.addDisc(0);
+//        controller.addDisc(5);
+//        controller.addDisc(1);
+//        controller.addDisc(1);
+//        controller.addDisc(1);
+//        controller.addDisc(2);
+//        controller.addDisc(2);
+//        controller.addDisc(5);
+//        controller.addDisc(3);
+//
+//        // test diagonal north east
+//        controller.newGame();
+//        controller.addDisc(0);
+//        controller.addDisc(1);
+//        controller.addDisc(2);
+//        controller.addDisc(3);
+//        controller.addDisc(4);
+//        controller.addDisc(5);
+//        controller.addDisc(5);
+//        controller.addDisc(5);
+//        controller.addDisc(5);
+//        controller.addDisc(5);
+//        controller.addDisc(0);
+//        controller.addDisc(4);
+//        controller.addDisc(4);
+//        controller.addDisc(4);
+//        controller.addDisc(3);
+//        controller.addDisc(3);
+//        controller.addDisc(0);
+//        controller.addDisc(2);
     }
 }

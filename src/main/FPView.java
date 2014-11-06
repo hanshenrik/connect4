@@ -58,10 +58,10 @@ public class FPView implements Observer, ActionListener {
 
     public void update(java.util.Observable o, Object arg) {
         scoreField.setText(model.getScore());
-        messageField.setText(model.getMessage());
+        messageField.setText(model.isGameOver() + "");
         nextDiscField.setText(model.getNextDisc() + "");
         startingDiscField.setText(model.getStartingDisc() + "");
-        winnerField.setText(model.getLastWinner() + "");
+        winnerField.setText(model.getPreviousWinner() + "");
         frame.repaint();
     }
 
@@ -115,9 +115,10 @@ public class FPView implements Observer, ActionListener {
             setEnableResetScore(true);
         }
         else if (event.getSource() == endGame) {
-            setEnableNewGame(true);
-            setEnableEndGame(false);
-            setEnableResetScore(false);
+            controller.endGame();
+//            setEnableNewGame(true);
+//            setEnableEndGame(false);
+//            setEnableResetScore(false);
             // TODO make board interaction disabled
         }
         else if (event.getSource() == resetScore)

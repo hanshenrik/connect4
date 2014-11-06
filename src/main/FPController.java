@@ -20,7 +20,10 @@ public class FPController {
     }
 
     public void endGame() {
-        model.endGame();
+//        model.endGame();
+        model.playDisc(0);
+        model.playDisc(1);
+        printBoard();
     }
 
     public void resetScore() {
@@ -29,17 +32,17 @@ public class FPController {
 
     public void addDisc(int col) {
         // validate input?
-        model.addDisc(col);
+        model.playDisc(col);
         printBoard();
     }
 
-    private void printBoard() {
+    public void printBoard() {
         // TODO: remove! for testing only
         Cell[][] board = model.getBoard();
         System.out.println("\n=======================================================");
-        for (int i = board.length - 1; i >= 0; i--) {
+        for (int i = model.ROWS - 1; i >= 0; i--) {
             System.out.print(i + " ");
-            for (int j = 0; j < board[i].length; j++) {
+            for (int j = 0; j < model.COLS; j++) {
                 System.out.print(board[i][j].getDisc() + ", ");
             }
             System.out.println("");

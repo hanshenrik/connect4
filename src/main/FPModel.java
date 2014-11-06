@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.*;
 import java.util.Observable;
 
 /**
@@ -7,12 +8,12 @@ import java.util.Observable;
  */
 public class FPModel extends Observable {
 
-    private final int ROWS = 7;
-    private final int COLS = 6;
-    private boolean isWinningLine;
-    private Disc startingDisc, nextDisc, lastWinner;
+    public final int ROWS = 7;
+    public final int COLS = 6;
+    private boolean isWinningLine, isGameEndedByUser;
+    private Disc startingDisc, nextDisc, previousWinner;
     private int playerOneWins, playerTwoWins;
-    private String message;
+    private int freeCells;
     private Cell[][] board;
     /*
      * The board is 'up side down' with respect to rows. This to make the layout
@@ -44,33 +45,31 @@ public class FPModel extends Observable {
         switchStarter();
         nextDisc = startingDisc;
         createBoard();
+        freeCells = ROWS*COLS;
         setChanged();
         notifyObservers();
     }
 
-    // sufficient to disable all actions but newGame in View/Controller if the endGame button is pushed?
     public void endGame() {
-        // TODO
+        isGameEndedByUser = true;
     }
 
-    public void addDisc(int col) {
+    public boolean isGameOver() {
+        return isGameEndedByUser || isWinningLine || isFullBoard();
+    }
+
+    public int playDisc(int col) {
         int row = findLowestFreeRow(col);
 
-        // TODO should checks like this be done here? And should it only set a message?
-        if (row == -1)
-            setMessage("Column " + col + " is full.");
-        else if (isWinningLine)
-            setMessage("Winning line exists.");
-        else if (isFullBoard())
-            setMessage("Board is full.");
-        else {
+        if (row != -1 && !isGameOver()) {
             board[row][col].setDisc(nextDisc);
+            freeCells--;
             switchTurn();
-            checkVictory(row, col);
-            setMessage("");
+            setWinningLine(row, col);
+            setChanged();
+            notifyObservers();
         }
-        setChanged();
-        notifyObservers();
+        return row;
     }
 
     private int findLowestFreeRow(int col) {
@@ -98,8 +97,6 @@ public class FPModel extends Observable {
             playerOneWins++;
         else if (winningDisc == Disc.PLAYER2)
             playerTwoWins++;
-        else
-            setMessage("Unidentified winning disc: " + winningDisc);
     }
 
     private void switchTurn() {
@@ -110,51 +107,59 @@ public class FPModel extends Observable {
         startingDisc = (startingDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
     }
 
-    private void checkVictory(int row, int col) {
-        Point northEastSearchStartPoint = getNorthEastSearchStartPoint(row, col);
-        Point northWestSearchStartPoint = getNorthWestSearchStartPoint(row, col);
+    private void setWinningLine(int row, int col) {
+        Point   horizontalStart = new Point(row, 0),
+                horizontalEnd = new Point(row, COLS - 1),
+                verticalStart = new Point(0, col),
+                verticalEnd = new Point(ROWS - 1, col),
+                northEastSearchStart = getNorthEastSearchStartPoint(row, col),
+                northEastSearchEnd = new Point(ROWS - 1, COLS - 1),
+                northWestSearchStart = getNorthWestSearchStartPoint(row, col),
+                northWestSearchEnd = new Point(ROWS - 1, 0);
 
         isWinningLine =
-            checkLine(row, 0, row, COLS - 1) || // horizontal
-            checkLine(0, col, ROWS - 1, col) || // vertical
-            checkLine(northEastSearchStartPoint.getX(), northEastSearchStartPoint.getY(), ROWS - 1, COLS - 1) ||
-            checkLine(northWestSearchStartPoint.getX(), northWestSearchStartPoint.getY(), ROWS - 1, 0);
+            checkLine(horizontalStart, horizontalEnd) || // horizontal
+            checkLine(verticalStart, verticalEnd) || // vertical
+            checkLine(northEastSearchStart, northEastSearchEnd) ||
+            checkLine(northWestSearchStart, northWestSearchEnd);
     }
 
     private Point getNorthEastSearchStartPoint(int row, int col) {
         Point startPoint = new Point(row, col);
-        while ( (startPoint.getX() != 0) && (startPoint.getY() != 0) ) {
-            startPoint.decreaseX();
-            startPoint.decreaseY();
+        while ( (startPoint.x != 0) && (startPoint.y != 0) ) {
+            startPoint.x--;
+            startPoint.y--;
         }
         return startPoint;
     }
 
     private Point getNorthWestSearchStartPoint(int row, int col) {
         Point startPoint = new Point(row, col);
-        while ( (startPoint.getX() != 0) && (startPoint.getY() != COLS - 1) ) {
-            startPoint.decreaseX();
-            startPoint.increaseY();
+        while ( (startPoint.x != 0) && (startPoint.y != COLS - 1) ) {
+            startPoint.x--;
+            startPoint.y++;
         }
         return startPoint;
     }
 
-    private boolean checkLine(int startX, int startY, int endX, int endY) {
+    // Change to checking right, left, right, left... up, down, up, down...
+    // ne, sw, ne, sw... nw, se, nw, se... until wrong disc on both sides!
+    private boolean checkLine(Point start, Point end) {
         int similarInARow = 0;
         int dirX = 0;
         int dirY = 0;
         Disc prevDisc = null;
         Disc curDisc;
 
-        if (startX < endX)
+        if (start.x < end.x)
             dirX = 1;
-        if (startY < endY)
+        if (start.y < end.y)
             dirY = 1;
-        else if (startY > endY)
+        else if (start.y > end.y)
             dirY = -1;
 
-        int x = startX;
-        int y = startY;
+        int x = start.x;
+        int y = start.y;
         while ( x < ROWS && ( (y < COLS && dirY >= 0) || (y >= 0 && dirY == -1) ) ) {
             curDisc = board[x][y].getDisc();
             if (curDisc == prevDisc && curDisc != null)
@@ -164,7 +169,7 @@ public class FPModel extends Observable {
 
             if (similarInARow == 4) {
                 increaseWins(curDisc);
-                lastWinner = curDisc;
+                previousWinner = curDisc;
                 return true;
             }
             prevDisc = curDisc;
@@ -182,30 +187,16 @@ public class FPModel extends Observable {
         return nextDisc;
     }
 
+    public Disc getPreviousWinner() {
+        return previousWinner;
+    }
+
     public boolean isWinningLine() {
         return isWinningLine;
     }
 
-    public Disc getLastWinner() {
-        return lastWinner;
-    }
-
     public boolean isFullBoard() {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                if (!board[i][j].hasDisc())
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    private void setMessage(String message) {
-        this.message = message;
+        return freeCells == 0;
     }
 }
 

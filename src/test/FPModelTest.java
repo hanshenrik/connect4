@@ -25,94 +25,94 @@ public class FPModelTest {
 
     @Test
     public void newGame_noCellHasDisc() {
-        model.addDisc(0);
-        model.addDisc(1);
-        model.addDisc(2);
-        model.addDisc(3);
-        model.addDisc(4);
-        model.addDisc(5);
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
+        model.playDisc(0);
+        model.playDisc(1);
+        model.playDisc(2);
+        model.playDisc(3);
+        model.playDisc(4);
+        model.playDisc(5);
+        model.playDisc(0);
+        model.playDisc(0);
+        model.playDisc(0);
 
         model.newGame();
         Cell[][] board = model.getBoard();
 
         for (Cell[] row : board) {
             for (Cell cell : row) {
-                Assert.assertFalse("Cell of new board contains disc from prev game", cell.hasDisc());
+                Assert.assertFalse("Cell in new board was not empty.", cell.hasDisc());
             }
         }
     }
 
     @Test
-    public void addDisc_winningLineDisablesAddingDisc() throws Exception {
-        model.addDisc(0);
-        model.addDisc(1);
-        model.addDisc(0);
-        model.addDisc(1);
-        model.addDisc(0);
-        model.addDisc(1);
-        model.addDisc(0); // winning line for Player1, vertical in column 0
+    public void playDisc_winningLineDisablesAddingDisc() throws Exception {
+        model.playDisc(0);
+        model.playDisc(1);
+        model.playDisc(0);
+        model.playDisc(1);
+        model.playDisc(0);
+        model.playDisc(1);
+        model.playDisc(0); // winning line for Player1, vertical in column 0
 
-        model.addDisc(5);
+        model.playDisc(5);
         Cell cell = model.getBoard()[0][5];
-        Assert.assertNull("Disc was added when winning line existed", cell.getDisc());
+        Assert.assertNull("Disc was added when winning line existed.", cell.getDisc());
     }
 
     @Test
     public void isFullBoard_boardFilled() throws Exception {
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
-        model.addDisc(0);
+        model.playDisc(0);
+        model.playDisc(0);
+        model.playDisc(0);
+        model.playDisc(0);
+        model.playDisc(0);
+        model.playDisc(0);
 
-        model.addDisc(1);
-        model.addDisc(1);
-        model.addDisc(1);
-        model.addDisc(1);
-        model.addDisc(1);
-        model.addDisc(1);
+        model.playDisc(1);
+        model.playDisc(1);
+        model.playDisc(1);
+        model.playDisc(1);
+        model.playDisc(1);
+        model.playDisc(1);
 
-        model.addDisc(2);
-        model.addDisc(2);
-        model.addDisc(2);
-        model.addDisc(2);
-        model.addDisc(2);
-        model.addDisc(2);
+        model.playDisc(2);
+        model.playDisc(2);
+        model.playDisc(2);
+        model.playDisc(2);
+        model.playDisc(2);
+        model.playDisc(2);
 
-        model.addDisc(5);
+        model.playDisc(5);
 
-        model.addDisc(3);
-        model.addDisc(3);
-        model.addDisc(3);
-        model.addDisc(3);
-        model.addDisc(3);
-        model.addDisc(3);
+        model.playDisc(3);
+        model.playDisc(3);
+        model.playDisc(3);
+        model.playDisc(3);
+        model.playDisc(3);
+        model.playDisc(3);
 
-        model.addDisc(4);
-        model.addDisc(4);
-        model.addDisc(4);
-        model.addDisc(4);
-        model.addDisc(4);
-        model.addDisc(4);
+        model.playDisc(4);
+        model.playDisc(4);
+        model.playDisc(4);
+        model.playDisc(4);
+        model.playDisc(4);
+        model.playDisc(4);
 
-        model.addDisc(5);
-        model.addDisc(5);
-        model.addDisc(5);
-        model.addDisc(5);
-        model.addDisc(5);
+        model.playDisc(5);
+        model.playDisc(5);
+        model.playDisc(5);
+        model.playDisc(5);
+        model.playDisc(5);
 
-        model.addDisc(0);
-        model.addDisc(1);
-        model.addDisc(2);
-        model.addDisc(3);
-        model.addDisc(4); // all but topmost cell in column 5 filled
+        model.playDisc(0);
+        model.playDisc(1);
+        model.playDisc(2);
+        model.playDisc(3);
+        model.playDisc(4); // all but topmost cell in column 5 filled, no winning line
 
         Assert.assertFalse("isFullBoard() returned true when board was not full.", model.isFullBoard());
-        model.addDisc(5);
+        model.playDisc(5);
         Assert.assertTrue("isFullBoard() returned false when board was full.", model.isFullBoard());
     }
 }
