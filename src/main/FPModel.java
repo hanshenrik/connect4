@@ -31,6 +31,7 @@ public class FPModel extends Observable {
 
     //@ assignable playerOneWins;
     //@ assignable playerTwoWins;
+    //@ assignable isGameEndedByUser;
     //@ assignable isWinningLine;
     //@ assignable startingDisc;
     //@ assignable nextDisc;
@@ -38,6 +39,7 @@ public class FPModel extends Observable {
     //@ assignable freeCells;
     //@ ensures playerOneWins == 0;
     //@ ensures playerTwoWins == 0;
+    //@ ensures isGameEndedByUser == false;
     //@ ensures isWinningLine == false;
     //@ ensures startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
     //@ ensures nextDisc == startingDisc;
@@ -71,11 +73,13 @@ public class FPModel extends Observable {
         return playerOneWins + "-" + playerTwoWins;
     }
 
+    //@ assignable isGameEndedByUser;
     //@ assignable isWinningLine;
     //@ assignable startingDisc;
     //@ assignable nextDisc;
     //@ assignable board;
     //@ assignable freeCells;
+    //@ ensures isGameEndedByUser == false;
     //@ ensures isWinningLine == false;
     //@ ensures startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
     //@ ensures nextDisc == startingDisc;
@@ -90,6 +94,7 @@ public class FPModel extends Observable {
     @*/
     //@ ensures freeCells == ROWS*COLS;
     public void newGame() {
+        isGameEndedByUser = false;
         isWinningLine = false;
         switchStarter();
         nextDisc = startingDisc;
