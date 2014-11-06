@@ -47,6 +47,8 @@ public class FPModelTest {
 
     @Test
     public void playDisc_winningLineDisablesAddingDisc() throws Exception {
+        int col = 5;
+
         model.playDisc(0);
         model.playDisc(1);
         model.playDisc(0);
@@ -55,8 +57,8 @@ public class FPModelTest {
         model.playDisc(1);
         model.playDisc(0); // winning line for Player1, vertical in column 0
 
-        model.playDisc(5);
-        Cell cell = model.getBoard()[0][5];
+        int row = model.playDisc(col);
+        Cell cell = model.getBoard()[row][col];
         Assert.assertNull("Disc was added when winning line existed.", cell.getDisc());
     }
 
