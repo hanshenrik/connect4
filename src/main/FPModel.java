@@ -26,19 +26,22 @@ public class FPModel extends Observable {
 
     //@ public invariant playerOneWins >= 0 && playerTwoWins >= 0;
     //@ public invariant freeCells <= ROWS*COLS && freeCells >= 0;
-    //@ public invariant startingDisc == Disc.PLAYER1 || startingDisc == Disc.PLAYER2;
-    //@ public invariant nextDisc == Disc.PLAYER1 || nextDisc == Disc.PLAYER2;
+    //@ public invariant startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
+    //@ public invariant nextDisc == Disc.PLAYER1 ^ nextDisc == Disc.PLAYER2;
 
     //@ assignable playerOneWins;
     //@ assignable playerTwoWins;
     //@ assignable isWinningLine;
+    //@ assignable startingDisc;
     //@ assignable nextDisc;
+    //@ assignable board;
     //@ assignable freeCells;
     //@ ensures playerOneWins == 0;
     //@ ensures playerTwoWins == 0;
     //@ ensures isWinningLine == false;
-    //TODO //@ ensures startingDisc = (startingDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
+    //@ ensures startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
     //@ ensures nextDisc == startingDisc;
+    //@ ensures board.length == ROWS;
     //@ ensures freeCells == ROWS*COLS;
     public FPModel() {
         resetScore();
@@ -61,11 +64,14 @@ public class FPModel extends Observable {
     }
 
     //@ assignable isWinningLine;
+    //@ assignable startingDisc;
     //@ assignable nextDisc;
+    //@ assignable board;
     //@ assignable freeCells;
     //@ ensures isWinningLine == false;
-    //TODO //@ ensures startingDisc = (startingDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
+    //@ ensures startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
     //@ ensures nextDisc == startingDisc;
+    //@ ensures board.length == ROWS;
     //@ ensures freeCells == ROWS*COLS;
     public void newGame() {
         isWinningLine = false;
@@ -88,7 +94,10 @@ public class FPModel extends Observable {
     }
 
     //@ assignable freeCells;
+    //@ assignable nextDisc;
+    //@ assignable isWinningLine;
     //@ requires 0 < col && col < COLS;
+    //@ ensures nextDisc == Disc.PLAYER1 ^ nextDisc == Disc.PLAYER2;
     public int playDisc(int col) {
         int row = findLowestFreeRow(col);
 
@@ -114,11 +123,16 @@ public class FPModel extends Observable {
 
     //@ assignable board;
     //@ ensures board.length == ROWS;
+    /*@ ensures
+        (\forall int row; 0 < row && row < ROWS; board[row].length == COLS)
+    @*/
+    /*@ ensures
+        (\forall int i; 0 < i && i < ROWS;
+            (\forall int j; 0 < j && j < COLS; board[i][j].hasDisc() == false)
+        )
+    @*/
     private void createBoard() {
         board = new Cell[ROWS][COLS];
-        /*@ loop_invariant
-          @ 0 <= i && i < ROWS && 0 <= j && j < COLS;
-          @*/
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++)
                 board[i][j] = new Cell();
@@ -129,14 +143,14 @@ public class FPModel extends Observable {
         return board;
     }
 
-    //@ assignable startingDisc;
-    //@ ensures nextDisc == Disc.PLAYER1 || nextDisc == Disc.PLAYER2;
+    //@ assignable nextDisc;
+    //@ ensures nextDisc == Disc.PLAYER1 ^ nextDisc == Disc.PLAYER2;
     private void switchTurn() {
         nextDisc = (nextDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
     }
 
     //@ assignable startingDisc;
-    //@ ensures startingDisc == Disc.PLAYER1 || startingDisc == Disc.PLAYER2;
+    //@ ensures startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
     private void switchStarter() {
         startingDisc = (startingDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
     }
@@ -152,7 +166,6 @@ public class FPModel extends Observable {
 
     //@ requires 0 <= row && row < ROWS;
     //@ requires 0 <= col && col < COLS;
-    //TODO //@ requires dir.equals("southwest") || dir.equals("southeast");
     //@ ensures 0 <= \result.x && \result.x < ROWS;
     //@ ensures 0 <= \result.y && \result.y < COLS;
     private Point getDiagonalStartPoint(int row, int col, String dir) {
@@ -212,7 +225,7 @@ public class FPModel extends Observable {
     //@ requires winningDisc == Disc.PLAYER1 || winningDisc == Disc.PLAYER2;
     //@ assignable playerOneWins;
     //@ assignable playerTwoWins;
-    //@ ensures playerOneWins == \old(playerOneWins) + 1 || playerTwoWins == \old(playerTwoWins) + 1;
+    //@ ensures (playerOneWins == \old(playerOneWins) + 1) ^ (playerTwoWins == \old(playerTwoWins) + 1);
     private void increaseWins(Disc winningDisc) {
         if (winningDisc == Disc.PLAYER1)
             playerOneWins++;
@@ -240,4 +253,3 @@ public class FPModel extends Observable {
         return freeCells == 0;
     }
 }
-
