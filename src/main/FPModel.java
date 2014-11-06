@@ -8,8 +8,8 @@ import java.util.Observable;
  */
 public class FPModel extends Observable {
 
-    public final int ROWS = 7;
-    public final int COLS = 6;
+    public static final int ROWS = 7;
+    public static final int COLS = 6;
     private /*@ spec_public @*/ boolean isWinningLine, isGameEndedByUser;
     private /*@ spec_public @*/ Disc startingDisc, nextDisc, previousWinner;
     private /*@ spec_public @*/ int playerOneWins, playerTwoWins;
