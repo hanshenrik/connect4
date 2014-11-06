@@ -8,6 +8,7 @@ import java.util.Observer;
 
 /**
  * Created by hanshenrik on 04/11/14.
+ * UNFINISHED!
  */
 public class FPView implements Observer, ActionListener {
     private static final Dimension PANEL_SIZE = new Dimension(300, 300);
