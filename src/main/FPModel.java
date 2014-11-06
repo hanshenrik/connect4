@@ -10,11 +10,11 @@ public class FPModel extends Observable {
 
     public final int ROWS = 7;
     public final int COLS = 6;
-    private boolean isWinningLine, isGameEndedByUser;
-    private Disc startingDisc, nextDisc, previousWinner;
-    private int playerOneWins, playerTwoWins;
-    private int freeCells;
-    private Cell[][] board;
+    private /*@ spec_public @*/ boolean isWinningLine, isGameEndedByUser;
+    private /*@ spec_public @*/ Disc startingDisc, nextDisc, previousWinner;
+    private /*@ spec_public @*/ int playerOneWins, playerTwoWins;
+    private /*@ spec_public @*/ int freeCells;
+    private /*@ spec_public @*/ Cell[][] board;
     /*
      * The board is 'up side down' with respect to rows. This to make the layout
      * more intuitive. E.g., a 3x3 board would be indexed as such:
@@ -24,11 +24,31 @@ public class FPModel extends Observable {
      * [0,0]    [0,1]   [0,2]
      */
 
+    //@ public invariant playerOneWins >= 0 && playerTwoWins >= 0;
+    //@ public invariant freeCells <= ROWS*COLS && freeCells >= 0;
+    //@ public invariant startingDisc == Disc.PLAYER1 || startingDisc == Disc.PLAYER2;
+    //@ public invariant nextDisc == Disc.PLAYER1 || nextDisc == Disc.PLAYER2;
+
+    //@ assignable playerOneWins;
+    //@ assignable playerTwoWins;
+    //@ assignable isWinningLine;
+    //@ assignable nextDisc;
+    //@ assignable freeCells;
+    //@ ensures playerOneWins == 0;
+    //@ ensures playerTwoWins == 0;
+    //@ ensures isWinningLine == false;
+    //TODO //@ ensures startingDisc = (startingDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
+    //@ ensures nextDisc == startingDisc;
+    //@ ensures freeCells == ROWS*COLS;
     public FPModel() {
         resetScore();
         newGame();
     }
 
+    //@ assignable playerOneWins;
+    //@ assignable playerTwoWins;
+    //@ ensures playerOneWins == 0;
+    //@ ensures playerTwoWins == 0;
     public void resetScore() {
         playerOneWins = 0;
         playerTwoWins = 0;
@@ -40,6 +60,13 @@ public class FPModel extends Observable {
         return playerOneWins + "-" + playerTwoWins;
     }
 
+    //@ assignable isWinningLine;
+    //@ assignable nextDisc;
+    //@ assignable freeCells;
+    //@ ensures isWinningLine == false;
+    //TODO //@ ensures startingDisc = (startingDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
+    //@ ensures nextDisc == startingDisc;
+    //@ ensures freeCells == ROWS*COLS;
     public void newGame() {
         isWinningLine = false;
         switchStarter();
@@ -50,6 +77,8 @@ public class FPModel extends Observable {
         notifyObservers();
     }
 
+    //@ assignable isGameEndedByUser;
+    //@ ensures isGameEndedByUser == true;
     public void endGame() {
         isGameEndedByUser = true;
     }
@@ -58,6 +87,8 @@ public class FPModel extends Observable {
         return isGameEndedByUser || isWinningLine || isFullBoard();
     }
 
+    //@ assignable freeCells;
+    //@ requires 0 < col && col < COLS;
     public int playDisc(int col) {
         int row = findLowestFreeRow(col);
 
@@ -65,13 +96,14 @@ public class FPModel extends Observable {
             board[row][col].setDisc(nextDisc);
             freeCells--;
             switchTurn();
-            setWinningLine(row, col);
+            setIsWinningLine(row, col);
             setChanged();
             notifyObservers();
         }
         return row;
     }
 
+    //@ requires 0 < col && col < COLS;
     private int findLowestFreeRow(int col) {
         for (int i = 0; i < ROWS; i++) {
             if (!board[i][col].hasDisc())
@@ -80,8 +112,13 @@ public class FPModel extends Observable {
         return -1;
     }
 
+    //@ assignable board;
+    //@ ensures board.length == ROWS;
     private void createBoard() {
         board = new Cell[ROWS][COLS];
+        /*@ loop_invariant
+          @ 0 <= i && i < ROWS && 0 <= j && j < COLS;
+          @*/
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++)
                 board[i][j] = new Cell();
@@ -92,58 +129,51 @@ public class FPModel extends Observable {
         return board;
     }
 
-    private void increaseWins(Disc winningDisc) {
-        if (winningDisc == Disc.PLAYER1)
-            playerOneWins++;
-        else if (winningDisc == Disc.PLAYER2)
-            playerTwoWins++;
-    }
-
+    //@ assignable startingDisc;
+    //@ ensures nextDisc == Disc.PLAYER1 || nextDisc == Disc.PLAYER2;
     private void switchTurn() {
         nextDisc = (nextDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
     }
 
+    //@ assignable startingDisc;
+    //@ ensures startingDisc == Disc.PLAYER1 || startingDisc == Disc.PLAYER2;
     private void switchStarter() {
         startingDisc = (startingDisc == Disc.PLAYER1) ? Disc.PLAYER2 : Disc.PLAYER1;
     }
 
-    private void setWinningLine(int row, int col) {
-        Point   horizontalStart = new Point(row, 0),
-                horizontalEnd = new Point(row, COLS - 1),
-                verticalStart = new Point(0, col),
-                verticalEnd = new Point(ROWS - 1, col),
-                northEastSearchStart = getNorthEastSearchStartPoint(row, col),
-                northEastSearchEnd = new Point(ROWS - 1, COLS - 1),
-                northWestSearchStart = getNorthWestSearchStartPoint(row, col),
-                northWestSearchEnd = new Point(ROWS - 1, 0);
-
+    //@ assignable isWinningLine;
+    private void setIsWinningLine(int row, int col) {
         isWinningLine =
-            checkLine(horizontalStart, horizontalEnd) || // horizontal
-            checkLine(verticalStart, verticalEnd) || // vertical
-            checkLine(northEastSearchStart, northEastSearchEnd) ||
-            checkLine(northWestSearchStart, northWestSearchEnd);
+            checkLine(new Point(row, 0), new Point(row, COLS - 1)) || // horizontal
+            checkLine(new Point(0, col), new Point(ROWS - 1, col)) || // vertical
+            checkLine(getDiagonalStartPoint(row, col, "southwest"), new Point(ROWS - 1, COLS - 1)) ||
+            checkLine(getDiagonalStartPoint(row, col, "southeast"), new Point(ROWS - 1, 0));
     }
 
-    private Point getNorthEastSearchStartPoint(int row, int col) {
-        Point startPoint = new Point(row, col);
-        while ( (startPoint.x != 0) && (startPoint.y != 0) ) {
-            startPoint.x--;
-            startPoint.y--;
+    //@ requires 0 <= row && row < ROWS;
+    //@ requires 0 <= col && col < COLS;
+    //TODO //@ requires dir.equals("southwest") || dir.equals("southeast");
+    //@ ensures 0 <= \result.x && \result.x < ROWS;
+    //@ ensures 0 <= \result.y && \result.y < COLS;
+    private Point getDiagonalStartPoint(int row, int col, String dir) {
+        if (!dir.equals("southwest") && !dir.equals("southeast"))
+            throw new IllegalArgumentException("Direction must be either 'southwest' or 'southeast'!");
+        Point point = new Point(row, col);
+        while ( (point.x != 0) && (point.y != 0) && (point.y != COLS - 1) ) {
+            point.x--;
+            if (dir.equals("southwest"))
+                point.y--;
+            else if (dir.equals("southeast"))
+                point.y++;
         }
-        return startPoint;
+        return point;
     }
 
-    private Point getNorthWestSearchStartPoint(int row, int col) {
-        Point startPoint = new Point(row, col);
-        while ( (startPoint.x != 0) && (startPoint.y != COLS - 1) ) {
-            startPoint.x--;
-            startPoint.y++;
-        }
-        return startPoint;
-    }
-
-    // Change to checking right, left, right, left... up, down, up, down...
-    // ne, sw, ne, sw... nw, se, nw, se... until wrong disc on both sides!
+    //@ requires 0 <= start.x && start.x < ROWS;
+    //@ requires 0 <= start.y && start.y < COLS;
+    //@ requires 0 <= end.x && end.x < ROWS;
+    //@ requires 0 <= end.y && end.y < COLS;
+    //@ assignable previousWinner;
     private boolean checkLine(Point start, Point end) {
         int similarInARow = 0;
         int dirX = 0;
@@ -177,6 +207,17 @@ public class FPModel extends Observable {
             y += dirY;
         }
         return false;
+    }
+
+    //@ requires winningDisc == Disc.PLAYER1 || winningDisc == Disc.PLAYER2;
+    //@ assignable playerOneWins;
+    //@ assignable playerTwoWins;
+    //@ ensures playerOneWins == \old(playerOneWins) + 1 || playerTwoWins == \old(playerTwoWins) + 1;
+    private void increaseWins(Disc winningDisc) {
+        if (winningDisc == Disc.PLAYER1)
+            playerOneWins++;
+        else if (winningDisc == Disc.PLAYER2)
+            playerTwoWins++;
     }
 
     public Disc getStartingDisc() {
