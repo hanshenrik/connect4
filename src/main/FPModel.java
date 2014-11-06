@@ -219,6 +219,12 @@ public class FPModel extends Observable {
 
         int x = start.x;
         int y = start.y;
+
+        /* make sure we don't end up outside the board by:
+         * (0) in all cases; make sure x < ROWS (x can only be static or increase)
+         * (1) if y increases (dirY > 0); make sure y < COLS
+         * (2) if y decreases (dirY < 0); make sure y >= 0;
+         */
         while ( x < ROWS && ( (y < COLS && dirY >= 0) || (y >= 0 && dirY == -1) ) ) {
             curDisc = board[x][y].getDisc();
             if (curDisc == prevDisc && curDisc != null)
