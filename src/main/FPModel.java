@@ -42,6 +42,14 @@ public class FPModel extends Observable {
     //@ ensures startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
     //@ ensures nextDisc == startingDisc;
     //@ ensures board.length == ROWS;
+        /*@ ensures
+        (\forall int row; 0 < row && row < ROWS; board[row].length == COLS)
+    @*/
+    /*@ ensures
+        (\forall int i; 0 < i && i < ROWS;
+            (\forall int j; 0 < j && j < COLS; board[i][j].hasDisc() == false)
+        )
+    @*/
     //@ ensures freeCells == ROWS*COLS;
     public FPModel() {
         resetScore();
@@ -72,6 +80,14 @@ public class FPModel extends Observable {
     //@ ensures startingDisc == Disc.PLAYER1 ^ startingDisc == Disc.PLAYER2;
     //@ ensures nextDisc == startingDisc;
     //@ ensures board.length == ROWS;
+        /*@ ensures
+        (\forall int row; 0 < row && row < ROWS; board[row].length == COLS)
+    @*/
+    /*@ ensures
+        (\forall int i; 0 < i && i < ROWS;
+            (\forall int j; 0 < j && j < COLS; board[i][j].hasDisc() == false)
+        )
+    @*/
     //@ ensures freeCells == ROWS*COLS;
     public void newGame() {
         isWinningLine = false;
