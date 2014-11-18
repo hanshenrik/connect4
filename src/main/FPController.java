@@ -39,12 +39,12 @@ public class FPController {
 
     public void printBoard() {
         // TODO: remove! for testing only
-        Cell[][] board = model.getBoard();
+        Disc[][] board = model.getBoard();
         System.out.println("\n=======================================================");
         for (int i = model.ROWS - 1; i >= 0; i--) {
             System.out.print(i + " ");
             for (int j = 0; j < model.COLS; j++) {
-                System.out.print(board[i][j].getDisc() + ", ");
+                System.out.print(board[i][j] + ", ");
             }
             System.out.println("");
         }

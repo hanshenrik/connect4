@@ -36,11 +36,11 @@ public class FPModelTest {
         model.playDisc(0);
 
         model.newGame();
-        Cell[][] board = model.getBoard();
+        Disc[][] board = model.getBoard();
 
-        for (Cell[] row : board) {
-            for (Cell cell : row) {
-                Assert.assertFalse("Cell in new board was not empty.", cell.hasDisc());
+        for (Disc[] row : board) {
+            for (Disc disc : row) {
+                Assert.assertNull("Disc in new board was not null.", disc);
             }
         }
     }
@@ -58,8 +58,8 @@ public class FPModelTest {
         model.playDisc(0); // winning line for Player1, vertical in column 0
 
         int row = model.playDisc(col);
-        Cell cell = model.getBoard()[row][col];
-        Assert.assertNull("Disc was added when winning line existed.", cell.getDisc());
+        Disc disc = model.getBoard()[row][col];
+        Assert.assertNull("Disc was added when winning line existed.", disc);
     }
 
     @Test

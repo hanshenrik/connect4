@@ -14,7 +14,7 @@ public class FPModel extends Observable {
     private /*@ spec_public @*/ Disc startingDisc, nextDisc, previousWinner;
     private /*@ spec_public @*/ int playerOneWins, playerTwoWins;
     private /*@ spec_public @*/ int freeCells;
-    private /*@ spec_public @*/ Cell[][] board;
+    private /*@ spec_public @*/ Disc[][] board;
     /*
      * The board is 'up side down' with respect to rows. This to make the layout
      * more intuitive. E.g., a 3x3 board would be indexed as such:
@@ -123,7 +123,7 @@ public class FPModel extends Observable {
         int row = findLowestFreeRow(col);
 
         if (row != -1 && !isGameOver()) {
-            board[row][col].setDisc(nextDisc);
+            board[row][col] = nextDisc;
             freeCells--;
             switchTurn();
             setIsWinningLine(row, col);
@@ -136,7 +136,7 @@ public class FPModel extends Observable {
     //@ requires 0 < col && col < COLS;
     private int findLowestFreeRow(int col) {
         for (int i = 0; i < ROWS; i++) {
-            if (!board[i][col].hasDisc())
+            if (board[i][col] == null)
                 return i;
         }
         return -1;
@@ -153,14 +153,14 @@ public class FPModel extends Observable {
         )
     @*/
     private void createBoard() {
-        board = new Cell[ROWS][COLS];
+        board = new Disc[ROWS][COLS];
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++)
-                board[i][j] = new Cell();
+                board[i][j] = null;
         }
     }
 
-    public Cell[][] getBoard() {
+    public Disc[][] getBoard() {
         return board;
     }
 
@@ -231,7 +231,7 @@ public class FPModel extends Observable {
          * (2) if y decreases (dirY < 0); make sure y >= 0;
          */
         while ( x < ROWS && ( (y < COLS && dirY >= 0) || (y >= 0 && dirY == -1) ) ) {
-            curDisc = board[x][y].getDisc();
+            curDisc = board[x][y];
             if (curDisc == prevDisc && curDisc != null)
                 similarInARow++;
             else
