@@ -2,7 +2,6 @@ package main;
 
 /**
  * Created by hanshenrik on 04/11/14.
- * UNFINISHED
  */
 public class FPController {
     private FPModel model;
@@ -21,20 +20,17 @@ public class FPController {
     }
 
     public void endGame() {
-//        model.endGame();
-        model.playDisc(0);
-        model.playDisc(1);
-        printBoard();
+        model.endGame();
     }
 
     public void resetScore() {
         model.resetScore();
     }
 
-    public void addDisc(int col) {
+    public void playDisc(int col) {
         // validate input?
         model.playDisc(col);
-        printBoard();
+        printBoard(); // TODO: remove!
     }
 
     public void printBoard() {
