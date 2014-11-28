@@ -17,19 +17,27 @@ public class FPController {
 
     public void newGame() {
         model.newGame();
+        view.setEnableEndGame(true);
+        view.setEnableResetScore(true);
     }
 
     public void endGame() {
         model.endGame();
+        view.setEnableEndGame(false);
+        view.setEnableResetScore(false);
     }
 
     public void resetScore() {
         model.resetScore();
+        view.setEnableResetScore(false);
     }
 
     public void playDisc(int col) {
         // validate input?
         model.playDisc(col);
+        if (model.isGameOver())
+            view.setEnableEndGame(false);
+
         printBoard(); // TODO: remove!
     }
 
