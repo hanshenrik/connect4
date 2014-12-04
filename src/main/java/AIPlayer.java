@@ -25,6 +25,10 @@ public class AIPlayer {
         return r.nextInt(FPModel.COLS - 1);
     }
 
+    public int repeatOpponent(int prevPlayedCol) {
+        return prevPlayedCol;
+    }
+
     public int sortOfBlockingHorVer(int prevPlayedCol) {
         board = model.getBoard();
 

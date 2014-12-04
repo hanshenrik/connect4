@@ -57,7 +57,8 @@ public class FPController {
         if (!aiTurn && aiMode) {
 //            playDisc(aiPlayer.simple(), true);
 //            playDisc(aiPlayer.random(), true);
-            playDisc(aiPlayer.sortOfBlockingHorVer(col), true);
+//            playDisc(aiPlayer.sortOfBlockingHorVer(col), true);
+            playDisc(aiPlayer.repeatOpponent(col), true);
         }
     }
 
