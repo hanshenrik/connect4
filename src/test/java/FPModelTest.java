@@ -1,7 +1,8 @@
-package test;
+package test.java;
 
+import main.java.Disc;
+import main.java.FPModel;
 import org.junit.*;
-import main.*;
 
 /**
  * There are as many naming conventions out there as there are bricks in the

@@ -1,4 +1,4 @@
-package main;
+package main.java;
 
 import java.awt.*;
 import java.util.Observable;
@@ -8,8 +8,8 @@ import java.util.Observable;
  */
 public class FPModel extends Observable {
 
-    public static final int ROWS = 7;
-    public static final int COLS = 6;
+    public static final int ROWS = 6;
+    public static final int COLS = 7;
     private /*@ spec_public @*/ boolean isWinningLine, isGameEndedByUser;
     private /*@ spec_public @*/ Disc startingDisc, nextDisc, previousWinner;
     private /*@ spec_public @*/ int playerOneWins, playerTwoWins;
@@ -70,7 +70,7 @@ public class FPModel extends Observable {
     }
 
     public String getScore() {
-        return playerOneWins + "-" + playerTwoWins;
+        return playerOneWins + " - " + playerTwoWins;
     }
 
     //@ assignable isGameEndedByUser;
@@ -134,7 +134,7 @@ public class FPModel extends Observable {
     }
 
     //@ requires 0 < col && col < COLS;
-    private int findLowestFreeRow(int col) {
+    public int findLowestFreeRow(int col) {
         for (int i = 0; i < ROWS; i++) {
             if (board[i][col] == null)
                 return i;
@@ -193,12 +193,14 @@ public class FPModel extends Observable {
         if (!dir.equals("southwest") && !dir.equals("southeast"))
             throw new IllegalArgumentException("Direction must be either 'southwest' or 'southeast'!");
         Point point = new Point(row, col);
-        while ( (point.x != 0) && (point.y != 0) && (point.y != COLS - 1) ) {
+        while ( (point.x != 0) && (point.y != 0) && (point.y != COLS - 1) && (point.x != ROWS - 1)) {
             point.x--;
-            if (dir.equals("southwest"))
+            if (dir.equals("southwest")) {
                 point.y--;
-            else if (dir.equals("southeast"))
+            }
+            else if (dir.equals("southeast")) {
                 point.y++;
+            }
         }
         return point;
     }

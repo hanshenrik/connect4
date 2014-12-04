@@ -1,4 +1,4 @@
-package main;
+package main.java;
 
 /**
  * Created by hanshenrik on 04/11/14.
@@ -19,26 +19,39 @@ public class FPController {
         model.newGame();
         view.setEnableEndGame(true);
         view.setEnableResetScore(true);
+        view.setEnableBoardInteraction(true);
+        view.setMessageField("New game started!");
     }
 
     public void endGame() {
         model.endGame();
         view.setEnableEndGame(false);
-        view.setEnableResetScore(false);
+        view.setEnableBoardInteraction(false);
+        view.setMessageField("Game ended!");
     }
 
     public void resetScore() {
         model.resetScore();
         view.setEnableResetScore(false);
+        view.setMessageField("Score reset!");
     }
 
     public void playDisc(int col) {
-        // validate input?
-        model.playDisc(col);
         if (model.isGameOver())
-            view.setEnableEndGame(false);
-
-        printBoard(); // TODO: remove!
+            view.setMessageField("Game over, start new game!");
+        else if (model.isFullBoard())
+            view.setMessageField("Board is full!");
+        else if (model.findLowestFreeRow(col) == -1)
+            view.setMessageField("Column is full!");
+        else {
+            model.playDisc(col);
+            view.setMessageField("Put disc in column " + col);
+            if (model.isGameOver()) {
+                System.out.println("from model.isGameOver()");
+                endGame();
+            }
+        }
+        printBoard(); // TODO: move to view, then remove!
     }
 
     public void printBoard() {
