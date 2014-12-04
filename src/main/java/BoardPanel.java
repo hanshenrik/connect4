@@ -11,6 +11,9 @@ public class BoardPanel extends JPanel {
     private static final int W = 64;
     private static final int H = W;
     private static final Dimension PREF_SIZE = new Dimension(W, H);
+    private Color black = new Color(30, 29, 28);
+    private Color red = new Color(223, 23, 23);
+    private Color white = new Color(252, 251, 250);
 
     private FPModel model;
 
@@ -49,11 +52,11 @@ public class BoardPanel extends JPanel {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
                 if (board[i][j] == Disc.PLAYER1)
-                    this.getComponent( (ROWS*COLS-1) - (i*7) - (COLS-1-j) ).setBackground(Color.BLACK);
+                    this.getComponent( (ROWS*COLS-1) - (i*7) - (COLS-1-j) ).setBackground(black);
                 else if (board[i][j] == Disc.PLAYER2)
-                    this.getComponent( (ROWS*COLS-1) - (i*7) - (COLS-1-j) ).setBackground(Color.WHITE);
+                    this.getComponent( (ROWS*COLS-1) - (i*7) - (COLS-1-j) ).setBackground(red);
                 else
-                    this.getComponent( (ROWS*COLS-1) - (i*7) - (COLS-1-j) ).setBackground(Color.LIGHT_GRAY);
+                    this.getComponent( (ROWS*COLS-1) - (i*7) - (COLS-1-j) ).setBackground(white);
             }
         }
     }
