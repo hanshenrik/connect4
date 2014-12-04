@@ -37,6 +37,9 @@ public class FPView implements Observer, ActionListener {
     private JButton newGame = new JButton("New game");
     private JButton resetScore = new JButton("Reset score");
     private JButton endGame = new JButton("End game");
+    private JButton aiMode = new JButton("Toggle AI Mode");
+
+    private boolean aiToggle = true;
 
     public FPView(FPModel model, FPController controller)  {
         this.model = model;
@@ -92,15 +95,17 @@ public class FPView implements Observer, ActionListener {
 
     private void createButtonPanel() {
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(1,3));
+        buttonPanel.setLayout(new GridLayout(1,4));
 
         newGame.addActionListener(this);
         endGame.addActionListener(this);
         resetScore.addActionListener(this);
+        aiMode.addActionListener(this);
 
         buttonPanel.add(newGame);
         buttonPanel.add(endGame);
         buttonPanel.add(resetScore);
+        buttonPanel.add(aiMode);
 
         buttonPanel.setPreferredSize(BUTTON_PANEL_SIZE);
     }
@@ -133,6 +138,9 @@ public class FPView implements Observer, ActionListener {
     public void setEnableResetScore(boolean b) {
         resetScore.setEnabled(b);
     }
+    public void setEnableAIMode(boolean b) {
+        aiMode.setEnabled(b);
+    }
 
     public void setEnableBoardInteraction(boolean b) {
 
@@ -148,5 +156,9 @@ public class FPView implements Observer, ActionListener {
         }
         else if (event.getSource() == resetScore)
             controller.resetScore();
+        else if (event.getSource() == aiMode) {
+            controller.setAIMode(aiToggle);
+            aiToggle = !aiToggle;
+        }
     }
 }

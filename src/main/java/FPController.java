@@ -6,9 +6,13 @@ package main.java;
 public class FPController {
     private FPModel model;
     private FPView view;
+    private AIPlayer aiPlayer;
+    private boolean aiMode;
 
     public FPController(FPModel model) {
         this.model = model;
+        this.aiPlayer = new AIPlayer(model);
+        this.aiMode = false;
     }
 
     public void setView(FPView view) {
@@ -20,6 +24,7 @@ public class FPController {
         view.setEnableEndGame(true);
         view.setEnableResetScore(true);
         view.setEnableBoardInteraction(true);
+        view.setEnableAIMode(true);
         view.setMessageField("New game started!");
     }
 
@@ -36,7 +41,7 @@ public class FPController {
         view.setMessageField("Score reset!");
     }
 
-    public void playDisc(int col) {
+    public void playDisc(int col, boolean aiTurn) {
         if (model.isGameOver())
             view.setMessageField("Game over, start new game!");
         else if (model.isFullBoard())
@@ -51,20 +56,14 @@ public class FPController {
                 endGame();
             }
         }
-        printBoard(); // TODO: move to view, then remove!
+        if (!aiTurn && aiMode) {
+//            playDisc(aiPlayer.simple(), true);
+//            playDisc(aiPlayer.random(), true);
+            playDisc(aiPlayer.sortOfBlockingHorVer(col), true);
+        }
     }
 
-    public void printBoard() {
-        // TODO: remove! for testing only
-        Disc[][] board = model.getBoard();
-        System.out.println("\n=======================================================");
-        for (int i = model.ROWS - 1; i >= 0; i--) {
-            System.out.print(i + " ");
-            for (int j = 0; j < model.COLS; j++) {
-                System.out.print(board[i][j] + ", ");
-            }
-            System.out.println("");
-        }
-        System.out.println("=======================================================");
+    public void setAIMode(boolean b) {
+        this.aiMode = b;
     }
 }

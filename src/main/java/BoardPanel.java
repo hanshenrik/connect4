@@ -36,7 +36,7 @@ public class BoardPanel extends JPanel {
                     return;
                 int col = panel.getX() / W;
                 for (int i = 0; i < ROWS; i++) {
-//                    getComponent(ROWS*i +i + col).setBackground(Color.pink);
+                    // TODO
                 }
             }
 
@@ -47,13 +47,12 @@ public class BoardPanel extends JPanel {
                     return;
                 int col = panel.getX() / W;
                 if (selectedPanel != null) {
-//                    selectedPanel.setBackground(originalColor);
                     selectedPanel.removeAll();
                 }
                 selectedPanel = panel;
                 selectedPanel.setBackground(SELECTION_COLOR);
                 selectedPanel.add(new JLabel(selectedPanel.getName()));
-                controller.playDisc(col);
+                controller.playDisc(col, false);
                 revalidate();
                 repaint();
             }
