@@ -13,11 +13,9 @@ public class BoardPanel extends JPanel {
     private static final Dimension PREF_SIZE = new Dimension(W, H);
 
     private FPModel model;
-    private FPController controller;
 
     public BoardPanel(FPModel model, final FPController controller) {
         this.model = model;
-        this.controller = controller;
         initializeBoard();
 
         addMouseListener(new MouseAdapter() {
