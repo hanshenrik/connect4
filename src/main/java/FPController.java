@@ -24,7 +24,6 @@ public class FPController {
         view.setEnableEndGame(true);
         view.setEnableResetScore(true);
         view.setEnableBoardInteraction(true);
-        view.setEnableAIMode(true);
         view.setMessageField("New game started!");
     }
 
@@ -52,7 +51,6 @@ public class FPController {
             model.playDisc(col);
             view.setMessageField("Put disc in column " + col);
             if (model.isGameOver()) {
-                System.out.println("from model.isGameOver()");
                 endGame();
             }
         }

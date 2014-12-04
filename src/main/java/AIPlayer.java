@@ -34,7 +34,6 @@ public class AIPlayer {
 
     /* checking logic from model, but instead of checking for winning line, check for 2 in a row of Disc.PLAYER1 */
     private int getTwoInARow(int row, int col) {
-        System.out.println(row + ", " + col);
         int h = checkLine(new Point(row, 0), new Point(row, FPModel.COLS - 1)); // horizontal
         int v = checkLine(new Point(0, col), new Point(FPModel.ROWS - 1, col)); // vertical
         return h >= 0 ? h : v;

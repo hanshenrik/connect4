@@ -3,11 +3,6 @@ package main.java;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class BoardPanel extends JPanel {
@@ -16,9 +11,6 @@ public class BoardPanel extends JPanel {
     private static final int W = 64;
     private static final int H = W;
     private static final Dimension PREF_SIZE = new Dimension(W, H);
-    protected static final Color SELECTION_COLOR = Color.pink;
-    private JPanel selectedPanel = null;
-    private Color originalColor = null;
 
     private FPModel model;
     private FPController controller;
@@ -36,7 +28,7 @@ public class BoardPanel extends JPanel {
                     return;
                 int col = panel.getX() / W;
                 for (int i = 0; i < ROWS; i++) {
-                    // TODO
+                    // TODO slightly paint every panel in column
                 }
             }
 
@@ -46,12 +38,6 @@ public class BoardPanel extends JPanel {
                 if (panel == null || panel == BoardPanel.this)
                     return;
                 int col = panel.getX() / W;
-                if (selectedPanel != null) {
-                    selectedPanel.removeAll();
-                }
-                selectedPanel = panel;
-                selectedPanel.setBackground(SELECTION_COLOR);
-                selectedPanel.add(new JLabel(selectedPanel.getName()));
                 controller.playDisc(col, false);
                 revalidate();
                 repaint();
